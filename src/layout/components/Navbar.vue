@@ -7,23 +7,27 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="imageUrl" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
-            <el-dropdown-item>
-              Home
+          <router-link to="/user/add">
+          <el-dropdown-item>
+              欢迎 : {{ nicheng }}
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
+          <router-link to="/user/add">
+          <el-dropdown-item>
+              UID : {{ UID }}
+            </el-dropdown-item>
+          </router-link>
+          <router-link to="/">
+            <el-dropdown-item>
+              主目录
+            </el-dropdown-item>
+          </router-link>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -35,7 +39,9 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-
+import Axios from 'axios';
+import store from '@/store/index';
+import url from '../../views/User/add.vue';
 export default {
   components: {
     Breadcrumb,
@@ -55,7 +61,31 @@ export default {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
-  }
+  },
+  data(){
+    return{
+      nicheng: "",
+      UID: "",
+      imageUrl: 'https://img.ixintu.com/download/jpg/20210209/9e842a3dbf66252db019066904662f47_512_512.jpg!bg',
+    }
+  },
+  created: function(){
+        Axios.post("http://172.16.4.224:8080/public/getUID",{
+                uname: store.getters.name,
+        }).then((response)=>{
+            this.UID = response.data.uid
+            this.nicheng = response.data.nicheng
+        }),
+        Axios.post("http://172.16.4.224:8080/info/getImg",{
+                uname: store.getters.name,
+            },{responseType: "blob"}).then((response)=>{
+                let blob = new Blob([response.data],{type: "image/jpeg"});
+                if(blob.size != 0){
+                    let url = window.URL.createObjectURL(blob);
+                    this.imageUrl = url;  
+                }
+        })
+      },
 }
 </script>
 

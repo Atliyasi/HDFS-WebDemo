@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
+  title: '基于Hadoop的数据共享云平台',
 
   /**
    * @type {boolean} true | false

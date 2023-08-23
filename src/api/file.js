@@ -1,24 +1,24 @@
 import request from '@/utils/request'
-
-export function login(data) {
+import user from '@/views/login'
+export function  getList () {
   return request({
-    url: '/user/login',
+    url: '/file/list',
     method: 'post',
-    data
+    params :{ user }
   })
 }
 
 export function getInfo(token) {
   return request({
-    url: '/user/info',
-    method: 'get',
+    url: '/file/info',
+    method: 'post',
     params: { token }
   })
 }
 
 export function logout() {
   return request({
-    url: '/user/logout',
+    url: '/file/logout',
     method: 'post'
   })
 }
